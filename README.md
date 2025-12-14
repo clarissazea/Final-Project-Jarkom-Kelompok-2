@@ -390,7 +390,68 @@ ping 192.168.3.225
 ```
 
 ## 6. NAT Overload (PAT)
-Router utama dikonfigurasi NAT overload agar semua host internal dapat mengakses internet.
+
+Untuk memenuhi kebutuhan akses internet bagi seluruh perangkat yang terhubung dalam jaringan Yayasan ARA, dilakukan konfigurasi **NAT Overload (Port Address Translation / PAT)** pada **router utama (Router 0)**. NAT Overload memungkinkan banyak alamat IP private dari jaringan lokal mengakses internet menggunakan **satu alamat IP publik** dengan membedakan koneksi berdasarkan nomor port.
+
+### Tujuan Konfigurasi
+- Memberikan akses internet ke seluruh host internal.
+- Menghemat penggunaan alamat IP publik.
+- Mensimulasikan implementasi NAT pada jaringan enterprise.
+
+---
+
+### Konfigurasi NAT Overload pada Router 0
+
+#### 1. Masuk ke mode konfigurasi router
+```bash
+enable
+configure terminal
+```
+
+#### 2. Menentukan interface NAT inside
+Interface yang terhubung ke jaringan internal (Gedung Utama, Gedung ARA Tech, dan Kantor Cabang) dikonfigurasikan sebagai NAT inside.
+```bash
+interface FastEthernet0/0
+ ip nat inside
+exit
+```
+Perintah ip nat inside menandai interface ini sebagai jalur masuk paket dari jaringan lokal yang akan diterjemahkan alamat IP-nya sebelum keluar ke internet.
+
+#### 3. Menentukan interface NAT outside
+Interface yang terhubung ke ISP atau Cloud dikonfigurasikan sebagai NAT outside.
+```bash
+interface FastEthernet0/1
+ ip nat outside
+exit
+```
+Perintah ip nat outside menandai interface sebagai jalur keluar menuju jaringan publik (internet), tempat terjadinya translasi alamat IP.
+
+#### 4. Membuat Access Control List (ACL)
+ACL digunakan untuk menentukan alamat IP internal yang diizinkan menggunakan NAT.
+```bash
+access-list 1 permit 192.168.0.0 0.0.255.255
+```
+ACL ini mengizinkan seluruh subnet internal dengan alamat 192.168.x.x untuk menggunakan NAT. Pendekatan ini memudahkan konfigurasi karena mencakup semua subnet hasil VLSM dan CIDR.
+
+#### 5. Mengaktifkan NAT Overload (PAT)
+```bash
+ip nat inside source list 1 interface FastEthernet0/1 overload
+```
+- inside source list 1 → alamat IP internal yang diizinkan NAT berdasarkan ACL 1
+
+- interface FastEthernet0/1 → menggunakan IP interface publik sebagai alamat global
+
+- overload → memungkinkan banyak host berbagi satu IP publik dengan nomor port berbeda
+
+#### 6. Menyimpan konfigurasi 
+```bash
+end
+copy running-config startup-config
+```
+Perintah ini menyimpan konfigurasi tetap aktif setelah router di restart
+
+#### Hasil implementasi 
+Dengan konfigurasi NAT Overload ini, seluruh host dari Gedung Utama, Gedung ARA Tech, dan Kantor Cabang dapat mengakses internet melalui Router 0. Semua koneksi keluar diterjemahkan menggunakan satu alamat IP publik dengan bantuan mekanisme port address translation (PAT).
 
 ## 7. GRE Tunnel
 GRE Tunnel dibuat antara router Gedung Utama dan router Kantor Cabang untuk komunikasi aman.
