@@ -183,11 +183,211 @@ Untuk Gedung ARA Tech digunakan teknik CIDR (Classless Inter-Domain Routing).
 | A25    | /30   | 192.168.6.64   | 255.255.255.252  | 192.168.6.67     | 192.168.6.65 – 192.168.6.66       |
 | A26    | /30   | 192.168.6.68   | 255.255.255.252  | 192.168.6.71     | 192.168.6.69 – 192.168.6.70       |
 
-## 5. Routing
-- Static Routing: antar lantai di Gedung ARA Tech.
-- Dynamic Routing (OSPF): antar Gedung Utama ↔ ARA Tech, dan ARA Tech ↔ Kantor Cabang.
-- Router pusat menjalankan OSPF area 0 sebagai backbone.
+## 5. Konfigurasi IP Statis dan DHCP Jaringan
+Perancangan jaringan dibagi menjadi tiga lokasi utama, yaitu Gedung ARA Tech, Gedung Utama, dan Kantor Cabang. Setiap lokasi memiliki beberapa subnet yang dirancang menggunakan metode VLSM (Variable Length Subnet Mask) agar penggunaan alamat IP lebih efisien dan sesuai dengan kebutuhan jumlah host pada masing-masing subnet.
 
+Secara umum, kebijakan pengalamatan IP yang digunakan adalah sebagai berikut:
+- Perangkat jaringan (router dan interface antar-router) menggunakan IP statis untuk menjaga kestabilan dan kemudahan pengelolaan routing.
+- Server utama menggunakan IP statis agar layanan jaringan (DHCP, DNS, dan lainnya) selalu dapat diakses pada alamat yang tetap.
+- Perangkat end-user (PC/klien) menggunakan DHCP untuk mempermudah manajemen alamat IP dan mengurangi kesalahan konfigurasi manual.
+
+### 1. Router 0 (Core Router)
+
+Fungsi:
+- OSPF ke Gedung Utama & Kantor Cabang
+- Static route ke seluruh subnet di Router 1
+
+#### IP Interface
+
+```
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.3.233 255.255.255.252
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 192.168.6.69 255.255.255.252
+ no shutdown
+```
+#### OSPF (HANYA antar gedung)
+
+```
+router ospf 1
+ network 192.168.6.68 0.0.0.3 area 0
+```
+#### Static Routing ke subnet Router 1
+
+```
+ip route 192.168.0.0 255.255.254.0 192.168.3.234
+ip route 192.168.2.0 255.255.255.0 192.168.3.234
+ip route 192.168.3.0 255.255.255.128 192.168.3.234
+ip route 192.168.3.128 255.255.255.192 192.168.3.234
+ip route 192.168.3.192 255.255.255.224 192.168.3.234
+ip route 192.168.3.224 255.255.255.248 192.168.3.234
+ip route 192.168.4.0 255.255.255.192 192.168.6.70
+ip route 192.168.4.64 255.255.255.192 192.168.6.70
+ip route 192.168.4.128 255.255.255.192 192.168.6.70
+```
+```
+end
+copy running-config startup-config
+```
+
+### 2. Router 1 (Gedung ARA Tech)
+
+Fungsi:
+- Gateway seluruh lantai
+- DHCP Relay
+- Static routing internal
+
+```
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.3.234 255.255.255.252
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 192.168.3.129 255.255.255.192
+ ip helper-address 192.168.6.10
+ no shutdown
+
+interface FastEthernet2/0
+ ip address 192.168.3.1 255.255.255.128
+ ip helper-address 192.168.6.10
+ no shutdown
+
+interface FastEthernet3/0
+ ip address 192.168.2.1 255.255.255.0
+ ip helper-address 192.168.6.10
+ no shutdown
+
+interface FastEthernet4/0
+ ip address 192.168.3.193 255.255.255.224
+ ip helper-address 192.168.6.10
+ no shutdown
+
+interface GigabitEthernet8/0
+ ip address 192.168.3.225 255.255.255.248
+ ip helper-address 192.168.6.10
+ no shutdown
+```
+#### Static Routing ke Router 0
+```
+ip route 0.0.0.0 0.0.0.0 192.168.3.233
+```
+```
+end
+copy running-config startup-config
+```
+
+### 3. Router Lt.1
+
+#### Fungsi:
+- Transit router
+- Static routing ke subnet Router 1
+
+```
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.6.65 255.255.255.252
+ no shutdown
+```
+#### Static Route
+```
+ip route 192.168.3.192 255.255.255.224 192.168.6.66
+ip route 192.168.3.224 255.255.255.248 192.168.6.66
+```
+```
+end
+copy running-config startup-config
+```
+
+### 4. Router Lt.2
+```
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.6.66 255.255.255.252
+ no shutdown
+```
+
+#### Static Routing
+```
+ip route 192.168.3.192 255.255.255.224 192.168.6.61
+ip route 192.168.3.224 255.255.255.248 192.168.6.61
+ip route 192.168.3.128 255.255.255.192 192.168.6.61
+```
+
+```
+end
+copy running-config startup-config
+```
+
+### 5. Router Lt.3
+```
+enable
+configure terminal
+
+interface FastEthernet0/0
+ ip address 192.168.6.70 255.255.255.252
+ no shutdown
+```
+
+#### Static Router ke Router 0
+```
+ip route 0.0.0.0 0.0.0.0 192.168.6.69
+```
+```
+end
+copy running-config startup-config
+```
+### 6. DHCP SERVER (SERVER & DATACENTER)
+
+#### IP Statis
+```
+IP Address      : 192.168.6.10
+Subnet Mask     : 255.255.255.240
+Default Gateway : 192.168.6.1
+```
+#### DHCP Pools
+#### A5
+```
+Network         : 192.168.3.192
+Subnet Mask     : 255.255.255.224
+Default Gateway : 192.168.3.193
+Start IP        : 192.168.3.194
+Max User        : 28
+```
+
+#### A7 (Fixed DHCP Emulation)
+```
+Network         : 192.168.3.224
+Subnet Mask     : 255.255.255.248
+Default Gateway : 192.168.3.225
+Start IP        : 192.168.3.226
+Max User        : 4
+```
+
+### 7. Client & Server Node
+```
+IP Configuration → DHCP
+```
+
+### 8. Verifikasi
+```
+show ip route
+show ip interface brief
+ping 192.168.6.10
+ping 192.168.3.193
+ping 192.168.3.225
+```
 
 ## 6. NAT Overload (PAT)
 Router utama dikonfigurasi NAT overload agar semua host internal dapat mengakses internet.
