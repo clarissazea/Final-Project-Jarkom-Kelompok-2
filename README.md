@@ -1,5 +1,44 @@
 # Final-Project-Jarkom-Kelompok-3
 
+## Tabel Subnet Infrastruktur Jaringan
+
+| Nama Subnet | Rute | Jumlah Host | Jumlah Host + Gateway | Netmask |
+|-------------|------|--------------|------------------------|---------|
+| A1  | Router 0 › Router 1                                      | 2   | 2   | /30 |
+| A2  | Router 1 › Switch8 › SDM Pendidikan                      | 95  | 96  | /25 |
+| A3  | Router 1 › Switch9 › Kurikulum & Penjaminan Mutu        | 220 | 221 | /24 |
+| A4  | Router 1 › Switch10 › Sarana Prasarana                  | 45  | 46  | /26 |
+| A5  | Router 1 › Switch11 › Pembinaan & Pengawasan Sekolah    | 18  | 19  | /27 |
+| A6  | Router 1 › Switch12 › Layanan Operasional Yayasan       | 380 | 381 | /23 |
+| A7  | Router 1 › Switch13 › IT Pendidikan                     | 6   | 7   | /29 |
+| A8  | Lantai 1 › Switch14 › Dept. IT Support                  | 45  | 46  | /26 |
+| A9  | Lantai 1 › Switch15 › Server & Data Center              | 12  | 13  | /28 |
+| A10 | Lantai 1 › Switch16 › Cybersecurity                     | 22  | 23  | /27 |
+| A11 | Lantai 2 › Switch17 › Marketing                         | 35  | 36  | /26 |
+| A12 | Lantai 2 › Switch18 › Sales                             | 25  | 26  | /27 |
+| A13 | Lantai 2 › Switch19 › Human Resources                   | 25  | 26  | /27 |
+| A14 | Lantai 3 › Switch20 › R&D                               | 55  | 56  | /26 |
+| A15 | Lantai 3 › Switch21 › People Development                | 18  | 19  | /27 |
+| A16 | Lantai 4 › Switch22 › Keuangan                          | 28  | 29  | /27 |
+| A17 | Lantai 4 › Switch23 › Legal                             | 18  | 19  | /27 |
+| A18 | Lantai 4 › Switch24 › Customer Service                  | 40  | 41  | /26 |
+| A19 | Lantai 5 › Switch25 › Executive Office                  | 12  | 13  | /28 |
+| A20 | Lantai 5 › Switch26 › Guest Lounge                      | 10  | 11  | /28 |
+| A21 | Lantai 5 › Switch27 › Auditorium                        | 15  | 16  | /27 |
+| A22 | Lantai 4 › Lantai 5                                     | 2   | 2   | /30 |
+| A23 | Lantai 3 › Lantai 4                                     | 2   | 2   | /30 |
+| A24 | Lantai 2 › Lantai 3                                     | 2   | 2   | /30 |
+| A25 | Lantai 1 › Lantai 2                                     | 2   | 2   | /30 |
+| A26 | Router 0 › Lantai 3                                     | 2   | 2   | /30 |
+| A27 | Router 0 › Kantor Cabang                                | 2   | 2   | /30 |
+| A28 | Kantor Cabang › Switch6 › Regional Office               | 40  | 41  | /26 |
+
+**Total:**  
+Jumlah host: **1178**  
+Jumlah host + gateway: **1199**  
+Netmask keseluruhan: **/21**
+
+
 ## Tabel Subnetting
 
 | Subnet | Prefix | Usable Hosts | Netmask           | Network ID     | Broadcast       | Usable Range                          |
