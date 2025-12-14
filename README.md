@@ -47,15 +47,15 @@
 | 3       | Total dengan cadangan: 1199 + 240 = **1439**                                |
 | 4       | Prefix length untuk total host (setelah ditambah cadangan 20%): **/21**    |
 
-### Pembagian Subnet Topologi
+## A. VLSM - Pembagian Subnet Topologi
 
 <img width="815" height="347" alt="Topologi FP Jarkom Kel 2 (Pembagian Subnet)" src="https://github.com/user-attachments/assets/a4740844-dcc0-4b1d-929c-fd2fab32c564" />
 
-## VLSM Tree
+### VLSM Tree
 
 <img width="768" height="573" alt="VLSM TREE FP Jarkom" src="https://github.com/user-attachments/assets/7596de8a-4515-4d95-9838-5631a220e332" />
 
-## Tabel Subnetting VLSM
+### Tabel Subnetting VLSM
 
 | Subnet | Prefix | Usable Hosts | Netmask           | Network ID     | Broadcast       | Usable Range                          |
 |--------|--------|--------------|-------------------|----------------|------------------|----------------------------------------|
@@ -67,13 +67,13 @@
 | A7     | /29    | 6            | 255.255.255.248   | 192.168.3.224  | 192.168.3.231    | 192.168.3.225 – 192.168.3.230          |
 | A1     | /30    | 2            | 255.255.255.252   | 192.168.3.232  | 192.168.3.235    | 192.168.3.233 – 192.168.3.234          |
 
-### Penggabungan Subnet CIDR
+## B. Penggabungan Subnet CIDR
 
 <img width="1629" height="693" alt="Topologi CIDR FP Jarkom Kel 2" src="https://github.com/user-attachments/assets/7d05971e-a2e8-4892-b55c-6d357bff99ba" />
 
-## Tabel Gabungan Subnet CIDR
+### Tabel Gabungan Subnet CIDR
 
-### Penggabungan 1
+#### Penggabungan 1
 
 | Subnet | Gabungan dari 1 | Netmask 1 | Gabungan dari 2 | Netmask 2 | Netmask Akhir |
 |--------|------------------|-----------|------------------|-----------|----------------|
@@ -83,7 +83,7 @@
 | B4     | A16              | /27       | A17              | /27       | /26            |
 | B5     | A19              | /28       | A20              | /28       | /27            |
 
-### Penggabungan 2
+#### Penggabungan 2
 
 | Subnet | Gabungan dari 1 | Netmask 1 | Gabungan dari 2 | Netmask 2 | Netmask Akhir |
 |--------|------------------|-----------|------------------|-----------|----------------|
@@ -92,20 +92,20 @@
 | C3     | B4               | /26       | A18              | /26       | /24            |
 | C4     | B5               | /27       | A21              | /27       | /26            |
 
-### Penggabungan 3
+#### Penggabungan 3
 
 | Subnet | Gabungan dari 1 | Netmask 1 | Gabungan dari 2 | Netmask 2 | Netmask Akhir |
 |--------|------------------|-----------|------------------|-----------|----------------|
 | D1     | C1               | /25       | C2               | /25       | /24            |
 | D2     | C3               | /24       | B3               | /25       | /24            |
 
-### Penggabungan 4
+#### Penggabungan 4
 
 | Subnet | Gabungan dari 1 | Netmask 1 | Gabungan dari 2 | Netmask 2 | Netmask Akhir |
 |--------|------------------|-----------|------------------|-----------|----------------|
 | E1     | D1               | /24       | D2               | /24       | /23            |
 
-## Tabel Subnetting CIDR
+### Tabel Subnetting CIDR
 
 
 | Subnet | CIDR  | Network ID     | Netmask         | Broadcast       | Range IP                          |
