@@ -1,10 +1,25 @@
 # Final-Project-Jarkom-Kelompok-3
 
-## Topologi
+## 1. Topologi Jaringan
 
 <img width="806" height="337" alt="Topologi_FP Jarkom Kel 2" src="https://github.com/user-attachments/assets/08de104c-2c49-4319-8774-a7e50053b644" />
 
-## Tabel Subnet Infrastruktur Jaringan
+Topologi jaringan terdiri dari tiga lokasi utama:
+
+- Gedung Utama Yayasan ARA: berisi unit pendidikan, kurikulum, sarana prasarana, pembinaan sekolah, IT pendidikan, dan layanan operasional yayasan.
+- Gedung ARA Tech: pusat teknologi dengan 5 lantai, masing-masing lantai memiliki departemen berbeda (IT Support, Data Center, Cybersecurity, Marketing, Sales, HR, R&D, People Development, Keuangan, Legal, Customer Service, Executive Office, Guest Lounge, Auditorium).
+- Kantor Cabang: terdiri dari regional office.
+
+Router 0 berfungsi sebagai backbone utama yang menghubungkan Gedung Utama, Gedung ARA Tech, dan Kantor Cabang. Setiap lantai/unit memiliki switch layer-2 untuk menghubungkan host dan server.
+
+Koneksi antar lantai di Gedung ARA Tech menggunakan link point-to-point (/30) untuk memudahkan static routing internal.
+
+## 2. Tabel Subnet Infrastruktur Jaringan
+
+Tabel berikut menunjukkan pembagian subnet berdasarkan jumlah host tiap unit/departemen.
+
+- Subnet besar diberikan ke unit dengan host banyak (misalnya Layanan Operasional Yayasan).
+- Subnet kecil digunakan untuk koneksi point-to-point antar router/lantai.
 
 | Nama Subnet | Rute | Jumlah Host | Jumlah Host + Gateway | Netmask |
 |-------------|------|--------------|------------------------|---------|
@@ -47,13 +62,34 @@
 | 3       | Total dengan cadangan: 1199 + 240 = **1439**                                |
 | 4       | Prefix length untuk total host (setelah ditambah cadangan 20%): **/21**    |
 
-## A. VLSM - Pembagian Subnet Topologi
+```
+Total kebutuhan host adalah 1199, ditambah cadangan 20% menjadi 1439 host, sehingga prefix global yang digunakan adalah /21.
+```
 
+## 3. VLSM (Gedung Utama)
+
+### Pembagian Subnet Topologi
+
+Teknik VLSM (Variable Length Subnet Mask) digunakan untuk Gedung Utama agar efisiensi IP lebih maksimal.
+
+- Subnet besar diberikan ke unit dengan host banyak.
+- Subnet kecil diberikan ke unit dengan host sedikit.
+  
 <img width="815" height="347" alt="Topologi FP Jarkom Kel 2 (Pembagian Subnet)" src="https://github.com/user-attachments/assets/a4740844-dcc0-4b1d-929c-fd2fab32c564" />
 
 ### VLSM Tree
 
+VLSM tree menunjukkan pembagian hierarki subnet dari blok utama /22 menjadi subnet yang lebih kecil sesuai kebutuhan.
+
+Total kebutuhan host Gedung Utama
+- Jumlah host: ±772
+- Ditambah cadangan 20%: ±926
+
+Prefix /22 menyediakan 1022 usable host, sehingga pas untuk menampung seluruh kebutuhan unit di Gedung Utama.
+
 <img width="768" height="573" alt="VLSM TREE FP Jarkom" src="https://github.com/user-attachments/assets/7596de8a-4515-4d95-9838-5631a220e332" />
+
+
 
 ### Tabel Subnetting VLSM
 
@@ -67,7 +103,14 @@
 | A7     | /29    | 6            | 255.255.255.248   | 192.168.3.224  | 192.168.3.231    | 192.168.3.225 – 192.168.3.230          |
 | A1     | /30    | 2            | 255.255.255.252   | 192.168.3.232  | 192.168.3.235    | 192.168.3.233 – 192.168.3.234          |
 
-## B. Penggabungan Subnet CIDR
+## 4. CIDR (Gedung ARA Tech)
+
+### Penggabungan Subnet CIDR
+
+Untuk Gedung ARA Tech digunakan teknik CIDR (Classless Inter-Domain Routing).
+
+- Subnet-subnet kecil digabungkan (supernetting) agar routing antar lantai lebih sederhana.
+- Hasil akhir penggabungan menghasilkan blok /23 yang mencakup seluruh lantai 3–5.
 
 <img width="1629" height="693" alt="Topologi CIDR FP Jarkom Kel 2" src="https://github.com/user-attachments/assets/7d05971e-a2e8-4892-b55c-6d357bff99ba" />
 
@@ -130,12 +173,17 @@
 | A25    | /30   | 192.168.6.64   | 255.255.255.252  | 192.168.6.67     | 192.168.6.65 – 192.168.6.66       |
 | A26    | /30   | 192.168.6.68   | 255.255.255.252  | 192.168.6.71     | 192.168.6.69 – 192.168.6.70       |
 
+## 5. Routing
+- Static Routing: antar lantai di Gedung ARA Tech.
+- Dynamic Routing (OSPF): antar Gedung Utama ↔ ARA Tech, dan ARA Tech ↔ Kantor Cabang.
+- Router pusat menjalankan OSPF area 0 sebagai backbone.
 
 
+## 6. NAT Overload (PAT)
+Router utama dikonfigurasi NAT overload agar semua host internal dapat mengakses internet.
 
-
-
-
+## 7. GRE Tunnel
+GRE Tunnel dibuat antara router Gedung Utama dan router Kantor Cabang untuk komunikasi aman.
 
 
 
