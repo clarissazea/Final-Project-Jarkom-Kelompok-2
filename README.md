@@ -390,11 +390,17 @@ ping 192.168.6.10
 ping 192.168.3.193
 ping 192.168.3.225
 ```
-Ping antar gedung (ada failed karena biasanya ping dikirimkan 2x).
+Koneksi antar Gedung Utama dan Gedung ARA Tech (ada failed karena biasanya ping dikirimkan 2x).
+
 <img width="1917" height="1043" alt="image" src="https://github.com/user-attachments/assets/e9e37a95-e908-4d97-9f2b-c097a0ae7ed9" />
 
 DHCP
 <img width="479" height="191" alt="dhcp neww" src="https://github.com/user-attachments/assets/5c5da36f-f4af-47fa-b9d0-ddb98055f4f2" />
+
+ Koneksi Gedung ARA Tech dan Kantor Cabang
+
+ ![ara tech - cabang](https://github.com/user-attachments/assets/a1592783-b6a0-469f-9802-6a2faad33073)
+
 
 ## 6. NAT Overload (PAT)
 
